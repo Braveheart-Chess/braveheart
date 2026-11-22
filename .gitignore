@@ -9,6 +9,9 @@ node_modules/
 .idea/
 .vscode/
 
+# The jaws CLI's run artifacts: plan text, comment files and the debug log
+.jaws/
+
 # Local secrets; never committed
 secrets.sh
 
