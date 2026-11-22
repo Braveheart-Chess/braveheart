@@ -5,14 +5,13 @@ This repository is a single-threaded UCI chess engine in Rust: the engine, perft
 ## Rules
 
 - **Never push to `main`.** Every change goes through a pull request on a branch. There are no exceptions after the initial scaffold.
-- **Commits are a single line**: `type(scope)?: subject`, at most 100 characters. Allowed types: `feat`, `fix`, `docs`, `chore`, `refactor`, `ci`, `build`, `perf`, `style`, `test`, `revert`. The only thing allowed after the header is a blank line and `Co-authored-by: Name <email>` trailers. No body text. Put details in the PR description.
-- **Open PRs with a typed template** and fill in every section:
+- **Commits are a single line**: `type(scope): subject`, at most 100 characters, with a lowercase imperative subject and no trailing period. Types: `feat`, `fix`, `perf`, `revert`, `docs`, `refactor`, `test`, `build`, `ci`, `style`, `chore`; never invent another. Scope: exactly one of `SCOPES` in `commitlint.config.mjs` (the Scopes table in CONTRIBUTING.md); never invent one, and if none fits, ask. The only thing allowed after the header is a blank line and `Co-authored-by: Name <email>` trailers. No body text. Put details in the PR description.
+- **PR titles are valid commit headers**, scope included; squash merges use the title as the commit message.
+- **PR bodies use the template's sections, in order, every one filled in**; write "n/a" rather than deleting one:
 
   ```sh
-  gh pr create --template <feat|perf|fix|docs|chore|refactor|ci>.md
+  gh pr create --title "type(scope): subject" --body-file <file>
   ```
-
-  The PR title MUST be a valid Conventional Commit; squash merges use it as the commit message.
 - **Run the repo's checks locally before opening the PR** (see below).
 - **Never change search or eval without a bench run.** Put the `Bench: <nodes>` signature before and after in the PR description. A changed signature on a `perf` PR is a bug; a `perf` PR must leave the signature unchanged. Use `feat` for anything that changes the signature and `fix` for correctness (perft, TT, mate scores).
 - **Every measured layer ships with a coverage suite and a performance bar, and both only grow.** Move generation is covered by `tests/perft.epd` (append positions, never remove or change a line), search by the bench positions, efficiency by the `stats` counters. The bars live in `perf-targets.toml`; raise one when the engine clears it, never lower one. CI's `Bench` job runs `perf-gate`: speed bars are reported on every PR and enforced on release PRs, efficiency bars are always enforced, and a PR that loosens a bar fails. The same job posts the bench comment with deltas against the latest release; read it before claiming a speed or efficiency change, and quote its numbers in the PR description.
@@ -61,7 +60,7 @@ cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo test --workspace --locked
 cargo test --workspace --locked --features stats
 cargo run --release -- bench   # note the signature
-npm ci && npm test
+npm ci && npm test && npm run test:commitlint
 ```
 
 ## Things that need the owner

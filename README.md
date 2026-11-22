@@ -45,7 +45,7 @@ account's `jaws-braveheart-selfplay-positions` (`data/selfplay/`) or
 The full plan is in [docs/roadmap.md](docs/roadmap.md), and the post-mortem of the
 first attempt that shaped it is [docs/lessons-from-rusty-chess-v1.md](docs/lessons-from-rusty-chess-v1.md).
 The repository rules
-are in [docs/repo-conventions.md](docs/repo-conventions.md), restated for
+are in the [repository conventions](https://github.com/jwallace145/repository-template/blob/main/repository-conventions.md), restated for
 contributors in [CONTRIBUTING.md](CONTRIBUTING.md) and for coding agents in
 [AGENTS.md](AGENTS.md).
 

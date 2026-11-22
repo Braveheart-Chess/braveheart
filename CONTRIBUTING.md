@@ -1,6 +1,6 @@
 # Contributing
 
-This repo follows the conventions in [docs/repo-conventions.md](docs/repo-conventions.md). The short version: one-line Conventional Commits, every change through a pull request, squash or rebase merges only, releases cut by Release Please, and every search or evaluation change justified by a number.
+This repo follows the [repository conventions](https://github.com/jwallace145/repository-template/blob/main/repository-conventions.md). The short version: one-line Conventional Commits, every change through a pull request, squash or rebase merges only, releases cut by Release Please, and every search or evaluation change justified by a number.
 
 This repository is the engine. Self-play data generation, relabelling and their audits are in [braveheart-selfplay](https://github.com/Braveheart-Chess/braveheart-selfplay), and the NNUE trainer, the `Train` and `GPU smoke` workflows and `nnue-eval` in [braveheart-trainer](https://github.com/Braveheart-Chess/braveheart-trainer); changes to those go to that repository, under its own `CONTRIBUTING.md`. A new net reaches the engine here as an ordinary pull request with its SPRT.
 
@@ -8,7 +8,7 @@ This repository is the engine. Self-play data generation, relabelling and their 
 
 1. Branch from `main`.
 2. Make the change. Keep the code formatted (`cargo fmt`) and run the local checks below.
-3. Open a PR with a typed template (see below). The PR title must be a valid Conventional Commit.
+3. Open a PR from the template (see below) and fill in every section. The PR title must be a valid commit header, scope included.
 4. For `feat` and `perf` PRs, fill in the bench signature. CI runs `bench` and uploads `bench.jsonl` and `stats.jsonl` as artifacts; if the PR description carries a `Bench: <nodes>` line, CI checks that the last one (the "after" value) matches its own run.
 5. Merge with **squash** or **rebase**. Merge commits are disabled and history stays linear.
 
@@ -19,16 +19,35 @@ Direct pushes to `main` are not allowed. The only exception was the initial scaf
 Every commit message is a single line:
 
 ```
-type(scope)?: subject
+type(scope): subject
 ```
 
-- At most 100 characters.
-- `type` is one of `feat`, `fix`, `docs`, `chore`, `refactor`, `ci`, `build`, `perf`, `style`, `test`, `revert`.
-- Breaking changes are marked with `!`, for example `feat!: drop the legacy bench format`.
-- The only content allowed after the header is a blank line followed by `Co-authored-by: Name <email>` trailers.
-- No body text. Details belong in the PR description.
+- At most 100 characters, with an imperative, lowercase subject and no trailing period.
+- `type` is one of `feat`, `fix`, `perf`, `revert`, `docs`, `refactor`, `test`, `build`, `ci`, `style`, `chore`: the same set in every repository.
+- `scope` is required: exactly one of the scopes below. A change that spans two is two pull requests, or takes the scope it is mostly about.
+- Breaking changes are marked with `!`, for example `feat(bench)!: drop the legacy bench format`.
+- The only content allowed after the header is a blank line followed by `Co-authored-by: Name <email>` trailers, in any letter case. No body text. Details belong in the PR description.
 
-commitlint enforces this with `@commitlint/config-conventional` plus a local rule, `only-coauthor-trailers` (`tools/commitlint/only-coauthor-trailers.mjs`), which fails on any line after the header that is not blank or a `Co-authored-by` trailer. CI runs it over every commit in the PR range, so a rebase merge never lands a non-conforming commit on `main`.
+commitlint enforces this with `@commitlint/config-conventional` plus two local rules in `tools/commitlint/`: `only-coauthor-trailers` fails on any line after the header that is not blank or a `Co-authored-by` trailer, and `single-scope` fails on a list such as `feat(a,b)`. The fixtures in `tests/commitlint/` show accepted and rejected messages. CI lints every commit in the PR range, so a rebase merge never lands a non-conforming commit on `main`, and lints the PR title through the same config. The standard behind it is the [repository conventions](https://github.com/jwallace145/repository-template/blob/main/repository-conventions.md).
+
+### Scopes
+
+Every commit names exactly one of this repository's scopes. They are `SCOPES` in `commitlint.config.mjs`; this table mirrors it, in the same order, and `npm run test:commitlint` fails if they drift. Adding, renaming or removing a scope goes through a pull request like any other change.
+
+| Scope | Covers |
+| --- | --- |
+| `search` | Alpha-beta search: pruning, reductions, move ordering, correction history |
+| `nnue` | The evaluation network: embedded nets, inference, accumulators |
+| `core` | Board representation, move generation and perft (`crates/core`) |
+| `uci` | The UCI protocol and the command line (`src/`) |
+| `bench` | `bench`, `benchmarks/`, `perf-targets.toml` and the Bench workflow |
+| `sprt` | The SPRT, Match and rating workflows and their tasks |
+| `tools` | `crates/tools` and `tools/engine-battle` |
+| `research` | The research log and the roadmap in `docs/` |
+| `infra` | `jaws.yaml` and the Jaws workflows |
+| `repo` | README, CONTRIBUTING, AGENTS, commitlint, the PR and issue templates, and repository tooling |
+| `deps` | Dependency updates, mostly Dependabot's |
+| `release` | Release Please's release pull requests and its config |
 
 ### Commit types for engine work
 
@@ -40,28 +59,21 @@ commitlint enforces this with `@commitlint/config-conventional` plus a local rul
 
 ### Why the PR title matters
 
-Squash merges use the PR title as the commit message on `main`, and Release Please reads those messages to decide the next version and to write `CHANGELOG.md`. A `feat` bumps the minor version, a `fix` bumps the patch, and `!` bumps the major (the minor while pre-1.0). CI lints the title with the same rules.
+Squash merges use the PR title as the commit message on `main`, and Release Please reads those messages to decide the next version and to write `CHANGELOG.md`. A `feat` bumps the minor version, a `fix` bumps the patch, and `!` bumps the major (the minor while pre-1.0). CI lints the title through the same commitlint config as a commit, scope included. Release Please's own pull requests are titled `chore(release): release X.Y.Z`.
 
 ### Dependabot PRs
 
-Dependabot cannot write one-line, lowercase commit messages, so its PRs skip the commit message check and the title check. Merge them with **squash** and a lowercase Conventional Commit subject, for example:
-
-```sh
-gh pr merge <n> --squash --subject "ci: bump actions/checkout from 6 to 7"
-```
+Dependabot writes its titles as `chore(deps): bump ...`, so they pass the title check as they are. Its commits carry a release-notes body, so its PRs skip the commit message check; merge them with **squash**, which lands only the title on `main`.
 
 Release Please only cuts a release when a commit of a type that appears in `CHANGELOG.md` lands on `main`: `feat`, `fix`, `perf`, `revert` or `docs`. `chore`, `ci`, `build`, `refactor`, `style` and `test` are hidden from the changelog and never release on their own.
 
-## Pull request templates
+## Pull request template
 
-Templates live in `.github/PULL_REQUEST_TEMPLATE/`, one per type: `feat.md`, `perf.md`, `fix.md`, `docs.md`, `chore.md`, `refactor.md`, `ci.md`. Pick one with
+One template, `.github/pull_request_template.md`: Summary, Why, Changes, Verification, Bench and SPRT, and a checklist. `gh pr create` and the compare page both start from it. Fill in every section; write "n/a" rather than deleting one. For a fix, Why names the bug, its root cause and how to reproduce it.
 
-```sh
-gh pr create --template fix.md
-```
+## Issues
 
-or by appending `?template=fix.md` to the compare URL. Every template has Summary, Motivation and context, What changed, How it was verified, and a Checklist. `fix.md` adds Bug, Root cause, and Reproduction. `feat.md` adds the bench signature before and after plus the SPRT result; `perf.md` adds the bench signature plus NPS before and after on a quiet machine. Fill in every section.
-
+Open issues from the forms: **Bug**, **Feature** or **Task**. Blank issues are off.
 ## Local setup
 
 Requirements: a stable Rust toolchain (`>= 1.85`, edition 2024), Node.js `>= 22`, and [pre-commit](https://pre-commit.com). For strength testing, [fastchess](https://github.com/Disservin/fastchess); for profiling, [samply](https://github.com/mstange/samply) and [cargo-show-asm](https://github.com/pacak/cargo-show-asm).
@@ -78,8 +90,8 @@ The `commit-msg` hook runs commitlint on every commit; the `pre-commit` hook run
 
 | Check | Runs |
 | --- | --- |
-| `Commit messages` | commitlint over `base..head` and the rule's unit tests (`npm test`) |
-| `PR title` | Conventional Commit check on the title |
+| `Commit messages` | commitlint over `base..head`, the rules' unit tests, the scopes table and the fixtures (`npm run test:commitlint`) |
+| `PR title` | commitlint on the title, through the same config as a commit |
 | `Format` | `cargo fmt --all --check` |
 | `Clippy` | `cargo clippy --workspace --all-targets --all-features -- -D warnings` |
 | `Tests` | `cargo test --workspace --locked`, with and without `--features stats` |
