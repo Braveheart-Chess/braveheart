@@ -247,7 +247,7 @@ The workspace root is itself a package because Release Please's `rust` strategy 
 | cargo-llvm-cov | Coverage, mainly for core |
 | Release Please | Versioning and changelog |
 
-The repo follows [repo-conventions.md](repo-conventions.md) in full; [CONTRIBUTING.md](../CONTRIBUTING.md) restates it. Engine-specific: the bench signature goes in the PR description, not the commit; `perf` for speed changes with an unchanged signature, `feat` for search or eval changes that change it, `fix` for correctness; a `feat` whose SPRT failed does not merge; `AGENTS.md` adds the rules agents must follow.
+The repo follows the [repository conventions](https://github.com/jwallace145/repository-template/blob/main/repository-conventions.md) in full; [CONTRIBUTING.md](../CONTRIBUTING.md) restates it. Engine-specific: the bench signature goes in the PR description, not the commit; `perf` for speed changes with an unchanged signature, `feat` for search or eval changes that change it, `fix` for correctness; a `feat` whose SPRT failed does not merge; `AGENTS.md` adds the rules agents must follow.
 
 ## Distribution and future API
 
