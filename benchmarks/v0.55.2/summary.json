@@ -1,0 +1,27 @@
+{
+  "bench": {
+    "depth": 10,
+    "hash_mb": 16,
+    "nps": 2168169,
+    "positions": 50,
+    "signature": 919304
+  },
+  "cpu": "Intel(R) Xeon(R) 6973P-C",
+  "date": "2026-11-25",
+  "efficiency": {
+    "ebf": 1.8613198244985312,
+    "fail_high_first": 0.8777675655270889,
+    "tt_hit": 0.5571538010905323
+  },
+  "instructions_per_node": 4015.590466265784,
+  "perft": {
+    "failures": 0,
+    "max_depth": 7,
+    "nps": 304203539,
+    "positions": 63
+  },
+  "runner": "ubuntu-latest",
+  "target_cpu": "x86-64-v3",
+  "v": 1,
+  "version": "v0.55.2"
+}
