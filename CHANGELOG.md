@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.55.2](https://github.com/Braveheart-Chess/braveheart/compare/v0.55.1...v0.55.2) (2026-11-25)
+
+
+### Bug Fixes
+
+* **repo:** let dependabot's capitalised bump titles pass ([#286](https://github.com/Braveheart-Chess/braveheart/issues/286)) ([5426e38](https://github.com/Braveheart-Chess/braveheart/commit/5426e3884a46181fd96f912c549dfc4daca3242c))
+
 ## [0.55.1](https://github.com/Braveheart-Chess/braveheart/compare/v0.55.0...v0.55.1) (2026-11-21)
 
 
