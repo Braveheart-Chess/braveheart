@@ -133,7 +133,7 @@ jobs:
     name: Play on a dedicated instance
     needs: resolve
     if: inputs.runner == 'remote'
-    uses: Jaws-Platform/jaws/.github/workflows/remote-task.yml@v0.76.0
+    uses: Jaws-Platform/jaws/.github/workflows/remote-task.yml@v0.80.1
     with:
       project: braveheart
       script: ci/match-task.sh
