@@ -7,6 +7,12 @@
 
 * **repo:** let dependabot's capitalised bump titles pass ([#286](https://github.com/Braveheart-Chess/braveheart/issues/286)) ([5426e38](https://github.com/Braveheart-Chess/braveheart/commit/5426e3884a46181fd96f912c549dfc4daca3242c))
 
+### Benchmarks
+
+* bench signature 919,304, instructions per node 4016, search 2.17M NPS, perft 304.20M NPS (pass (63)), fail-high first 87.8%, EBF 1.86, TT hit 55.7%
+* since v0.55.1: fail-high first +0.0 pt, EBF +0.00, instructions per node +0.0%, search NPS +27.8%
+* full history: [docs/benchmarks.md](docs/benchmarks.md)
+
 ## [0.55.1](https://github.com/Braveheart-Chess/braveheart/compare/v0.55.0...v0.55.1) (2026-11-21)
 
 
